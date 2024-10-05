@@ -2,6 +2,6 @@
 require "../load.php";
 $ObjLayouts->heading();
 //$ObjMenus->main_menu();
-$ObjHeadings->main_banner();
+$ObjHeadings->table_banner();
 $ObjCont->table();
 $ObjLayouts->footer();

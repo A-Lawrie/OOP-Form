@@ -1,8 +1,4 @@
 <?php
-
-?>
-
-<?php
 class contents{
     public function RegisterForm(){
 ?>
@@ -35,41 +31,59 @@ class contents{
         <?php
     }
     public function table(){
+        include '../pdo.php';
         ?>
-        <?php include 'pdo.php';?>
-        <table class="table table-striped">
-            <thead>
-                <th>User ID</th>
-                <th>Full Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Status</th>
-            </thead>
-            <tbody>
-            <?php while ($row = $result_users->fetch_assoc()) { ?>
-                <?php 
-                $state = "inactive";
-                $color = "";
-                    if ($row['Status'] = 1) {
-                        $state = "active";
-                        $color = "";
-                    } else {
-                        $state = "inactive";
-                        $color = "bg-danger";
-                    }
-                } else {
-                    // No rows found
-                    echo "<tr><td colspan='5'>No users found</td></tr>";
-                }
-            } catch (PDOException $e) {
-                // Catch and display any PDO errors
-                echo 'Query failed: ' . $e->getMessage();
-                die();
-            }
-                
-            ?>
-            </tbody>
-        </table>
+        <div class="container">
+            <div class="row">
+                <table class="table table-striped col-4">
+                    <thead>
+                        <th>User ID</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>2FA Status</th>
+                    </thead>
+                    <tbody>
+                    <?php
+                        try {
+                            // Assuming you have a valid PDO connection instance in $pdo
+                            $sql = "SELECT * FROM users";
+                            $stmt = $conn->query($sql);
+        
+                            if ($stmt->rowCount() > 0) {
+                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                    $state = "Disabled";
+                                    $color = "bg-danger text-white rounded p-1 fw-bold";
+        
+                                    // Check the user's status
+                                    if ($row['2FAStatus'] == 1) {  // Use == for comparison
+                                        $state = "Enabled";
+                                        $color = "bg-success text-white rounded p-1 fw-bold";
+                                    }
+                                    
+                                    // Output your table row here, for example:
+                                    echo "<tr'>
+                                    <td>{$row['UserID']}</td>
+                                    <td>{$row['FullName']}</td>
+                                    <td>{$row['UserName']}</td>
+                                    <td>{$row['Email']}</td>
+                                    <td><span class='".$color."'>$state</span></td>
+                                    </tr>";
+                                }
+                            } else {
+                                // No rows found
+                                echo "<tr><td colspan='5'>No users found</td></tr>";
+                            }
+                        } catch (PDOException $e) {
+                            // Catch and display any PDO errors
+                            echo 'Query failed: ' . $e->getMessage();
+                            die();
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <?php
     }
     public function LoginForm(){

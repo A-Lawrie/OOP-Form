@@ -28,7 +28,8 @@ if (isset($_POST['reg-user'])) {
 
         $stmt->execute();
 
-        echo "Registration successful!";
+        header('location: login.php');
+        exit();
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }
@@ -67,7 +68,7 @@ if (isset($_POST['login-user'])) {
                 
                 // Store user ID in session and redirect to the 2FA verification page
                 $_SESSION['user_id'] = $user['UserID'];
-                header('Location: verify-2fa.php');
+                header('Location: 2FA.php');
                 exit;
             } else {
                 echo "Failed to send the 2FA code.";
@@ -89,10 +90,10 @@ elseif (isset($_POST['2fa-user'])) {
     
     // Fetch the user ID from the session
     $userId = $_SESSION['user_id'];
-    $enteredCode = $_POST['verification_code'];
+    $enteredCode = $_POST['code'];
 
     // Fetch the stored verification code and expiry time for the user
-    $stmt = $pdo->prepare('SELECT VerificationCode, CodeExpiry FROM users WHERE UserID = ?');
+    $stmt = $conn->prepare('SELECT VerificationCode, CodeExpiry FROM users WHERE UserID = ?');
     $stmt->execute([$userId]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
